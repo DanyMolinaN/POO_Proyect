@@ -8,34 +8,29 @@ import javax.swing.ImageIcon;
 
 public class Nave extends ObjetoDelJuego {
     private static final long TIEMPO_DE_DISPARO = 100;
+    public static long DURACION_INVULNERABILIDAD = 3000;
     private int dx, dy;
     private List<Misil> misiles;
     private long ultimoDisparo;
+    private int vidas = 3;
+    private int intentos = 3;
+    private EstadoNave estado;
 
     public Nave(int x, int y) {
         super(x, y);
-        initJugador();
+        inicializarJugador();
+        estado = new EstadoNormal(this);
     }
 
-    private void initJugador() {
-        ImageIcon spriteJugador = new ImageIcon("src/recursos_gráficos/sprites/jugador.png");
+    private void inicializarJugador() {
+        ImageIcon spriteJugador = new ImageIcon("src/recursos_gráficos/sprites/Sprite-0001.png");
         imagen = spriteJugador.getImage();
         misiles = new ArrayList<>();
     }
 
     @Override
     public void actualizar() {
-        x += dx;
-        y += dy;
-        limitarMovimiento();
-        actualizarMisiles();
-    }
-
-    private void limitarMovimiento() {
-        if (x < 250) x = 250;
-        if (x > 926 - imagen.getWidth(null)) x = 926 - imagen.getWidth(null);
-        if (y < 550) y = 550;
-        if (y > 650 - imagen.getHeight(null)) y = 650 - imagen.getHeight(null);
+        estado.actualizar();
     }
 
     @Override
@@ -47,25 +42,22 @@ public class Nave extends ObjetoDelJuego {
     }
 
     public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
-        switch (key) {
-            case KeyEvent.VK_LEFT -> dx = -2;
-            case KeyEvent.VK_RIGHT -> dx = 2;
-            case KeyEvent.VK_UP -> dy = -2;
-            case KeyEvent.VK_DOWN -> dy = 2;
-            case KeyEvent.VK_Z -> disparar();
-        }
+        estado.keyPressed(e);
     }
 
     public void keyReleased(KeyEvent e) {
-        int key = e.getKeyCode();
-        switch (key) {
-            case KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> dx = 0;
-            case KeyEvent.VK_UP, KeyEvent.VK_DOWN -> dy = 0;
-        }
+        estado.keyReleased(e);
     }
 
     public void disparar() {
+        estado.disparar();
+    }
+
+    public void quitarVida() {
+        estado.quitarVida();
+    }
+
+    public void realizarDisparo() {
         long time = System.currentTimeMillis();
         if (time - ultimoDisparo >= TIEMPO_DE_DISPARO) {
             misiles.add(new Misil(x + imagen.getWidth(null) / 2 - 2, y));
@@ -73,7 +65,56 @@ public class Nave extends ObjetoDelJuego {
         }
     }
 
-    private void actualizarMisiles() {
+    public void reducirVida() {
+        vidas--;
+        if (vidas <= 0) {
+            vidas = 0; // Evitar vidas negativas
+            if (intentos <= 0) {
+                intentos = 0; // Evitar intentos negativos
+                System.out.println("Game Over");
+                // Lógica de fin del juego
+            } else {
+                ControladorJuego.reiniciarNivel();
+                reiniciar();
+            }
+        } else {
+            setEstado(new EstadoInvulnerable(this));
+        }
+    }
+
+    protected void reiniciar() {
+        x = 650;
+        y = 600;
+        vidas = 3;
+        setEstado(new EstadoNormal(this)); // Reiniciar estado a normal
+    }
+
+    public void setEstado(EstadoNave estado) {
+        this.estado = estado;
+    }
+
+    public void setDx(int dx) {
+        this.dx = dx;
+    }
+
+    public void setDy(int dy) {
+        this.dy = dy;
+    }
+
+    public void actualizarMovimiento() {
+        x += dx;
+        y += dy;
+        limitarMovimiento();
+    }
+
+    private void limitarMovimiento() {
+        if (x < 250) x = 250;
+        if (x > 926 - imagen.getWidth(null)) x = 926 - imagen.getWidth(null);
+        if (y < 550) y = 550;
+        if (y > 650 - imagen.getHeight(null)) y = 650 - imagen.getHeight(null);
+    }
+
+    public void actualizarMisiles() {
         List<Misil> misilesRemover = new ArrayList<>();
         for (Misil misil : misiles) {
             misil.actualizar();
@@ -82,6 +123,20 @@ public class Nave extends ObjetoDelJuego {
             }
         }
         misiles.removeAll(misilesRemover);
+    }
+
+    public int getVidas() {
+        return vidas;
+    }
+
+    public int getIntentos() {
+        return intentos;
+    }
+
+    public void quitarIntento() {
+        if (intentos > 0) {
+            intentos--;
+        }
     }
 
     public List<Misil> getMisiles() {

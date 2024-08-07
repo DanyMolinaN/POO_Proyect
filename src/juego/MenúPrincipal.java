@@ -24,6 +24,7 @@ public class MenúPrincipal extends JPanel {
     private double scaleX;
     private double scaleY;
     private JFrame parentFrame;  // Referencia al JFrame contenedor
+    private JButton button4;
 
     MenúPrincipal(JFrame parentFrame) {  // Constructor
         this.parentFrame = parentFrame;  // Inicializar la referencia al JFrame
@@ -65,9 +66,10 @@ public class MenúPrincipal extends JPanel {
     }
 
     private void createButtons() {
-        button1 = createImageButton("src/recursos_gráficos/botones/botonJugar.png");
-        button2 = createImageButton("src/recursos_gráficos/botones/boton.png");
-        button3 = createImageButton("src/recursos_gráficos/botones/boton.png");
+        button1 = createImageButton("src/recursos_gráficos/botones/jugar2.png");
+        button2 = createImageButton("src/recursos_gráficos/botones/SCORE1.png");
+        button3 = createImageButton("src/recursos_gráficos/botones/CREDITS.png");
+        button4 = createImageButton("src/recursos_gráficos/botones/Settings.png");
 
         button1.addActionListener(new ActionListener() {
             @Override
@@ -79,7 +81,7 @@ public class MenúPrincipal extends JPanel {
         button3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                abrirPuntuacionesDelJuego();
+
             }
         });
     }
@@ -103,21 +105,23 @@ public class MenúPrincipal extends JPanel {
     }
 
     private void createLabel() {
-        ImageIcon gifIcon = new ImageIcon("src/recursos_gráficos/logos/TituloJuego.gif");
-        Image gifImage = gifIcon.getImage().getScaledInstance((int)(300 * scaleX), (int)(200 * scaleY), Image.SCALE_DEFAULT);
+        ImageIcon gifIcon = new ImageIcon("src/recursos_gráficos/logos/tituloSpaceInavders.png");
+        Image gifImage = gifIcon.getImage().getScaledInstance((int)(250 * scaleX), (int)(250 * scaleY), Image.SCALE_DEFAULT);
         label = new JLabel(new ImageIcon(gifImage));
     }
 
     private void positionComponents() {
-        label.setBounds((int)(800 * scaleX), 0, (int)(300 * scaleX), (int)(200 * scaleY));
-        button1.setBounds((int)(800 * scaleX), (int)(250 * scaleY), (int)(270 * scaleX), (int)(100 * scaleY));
-        button2.setBounds((int)(800 * scaleX), (int)(380 * scaleY), (int)(270 * scaleX), (int)(100 * scaleY));
-        button3.setBounds((int)(800 * scaleX), (int)(500 * scaleY), (int)(270 * scaleX), (int)(100 * scaleY));
+        label.setBounds((int)(800 * scaleX), 0, (int)(250 * scaleX), (int)(250 * scaleY));
+        button1.setBounds((int)(830 * scaleX), (int)(250 * scaleY), (int)(230 * scaleX), (int)(130 * scaleY));
+        button2.setBounds((int)(800 * scaleX), (int)(350 * scaleY), (int)(300 * scaleX), (int)(200 * scaleY));
+        button3.setBounds((int)(800 * scaleX), (int)(500 * scaleY), (int)(300 * scaleX), (int)(200 * scaleY));
+        button4.setBounds((int)(10 * scaleX), (int)(550 * scaleY), (int)(200 * scaleX), (int)(100 * scaleY));
 
         panel2.add(label);
         panel2.add(button1);
         panel2.add(button2);
         panel2.add(button3);
+        panel2.add(button4);
     }
 
     private void startBackgroundTimer() {
@@ -165,15 +169,15 @@ public class MenúPrincipal extends JPanel {
 
     private JButton createImageButton(String imagePath) {
         ImageIcon icon = new ImageIcon(imagePath);
-        Image img = icon.getImage().getScaledInstance((int)(270 * scaleX), (int)(100 * scaleY), Image.SCALE_DEFAULT);
+        Image img = icon.getImage().getScaledInstance((int)(225 * scaleX), (int)(125* scaleY), Image.SCALE_DEFAULT);
         JButton button = new JButton(new ImageIcon(img));
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
-        button.addMouseListener(new MouseListener() {
+       button.addMouseListener(new MouseListener() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 button.setOpaque(true);
-                button.setBackground(new Color(0, 0, 0, 64));
+                button.setBackground(new Color(0, 100, 0, 0));
             }
 
             @Override
@@ -194,15 +198,7 @@ public class MenúPrincipal extends JPanel {
         return button;
     }
 
-    private void abrirPuntuacionesDelJuego() {
-        JFrame frame = new JFrame("Puntuaciones");
-        Puntuaciones puntuaciones = new Puntuaciones();
-        frame.setContentPane(puntuaciones.getPanel());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setVisible(true);
-        parentFrame.dispose();  // Cerrar el menú principal
-    }
+
 
     public JPanel getPanel2() {
         return panel2;
@@ -224,15 +220,3 @@ public class MenúPrincipal extends JPanel {
     }
 }
 
-class Puntuaciones {
-    private JPanel panel;
-
-    public Puntuaciones() {
-        panel = new JPanel();
-        panel.add(new JLabel("Aquí se mostrarán las puntuaciones"));
-    }
-
-    public JPanel getPanel() {
-        return panel;
-    }
-}

@@ -1,6 +1,6 @@
 package juego;
 
-import java.awt.Graphics;
+import java.awt.*;
 import javax.swing.ImageIcon;
 
 public class Defensa extends ObjetoDelJuego {
@@ -12,9 +12,11 @@ public class Defensa extends ObjetoDelJuego {
     }
 
     private void initDefensa() {
-        ImageIcon ii = new ImageIcon("src/Recursos/defensa.png");
+        ImageIcon ii = new ImageIcon("src/recursos_gráficos/sprites/defensa.png");
         imagen = ii.getImage();
-        vidas = 3;
+        this.imagen = ii.getImage();
+        this.imagen = this.imagen.getScaledInstance(75, 75, Image.SCALE_SMOOTH);
+        vidas = 30;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class Defensa extends ObjetoDelJuego {
         }
     }
 
-   /* public boolean isVisible() {
-        v
-    }*/
+    public boolean isVisible() {
+        return vidas > 0;
+    }
 }

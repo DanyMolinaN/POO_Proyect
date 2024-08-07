@@ -5,19 +5,24 @@ import java.awt.*;
 import java.util.Random;
 
 public class EnemigoQueDispara extends Enemigo {
+
     private static final int PROBABILIDAD_DISPARO = 1;
     private Random random = new Random();
 
     public EnemigoQueDispara(int x, int y) {
         super(x, y);
         initEnemigo();
+        this.imagenDerecha = new ImageIcon("src/recursos_gráficos/sprites/NaveEnemigaDER4.gif").getImage();
+        this.imagenIzquierda = new ImageIcon("src/recursos_gráficos/sprites/NaveEnemigaIZQ4.gif").getImage();
+
     }
 
     @Override
-    protected void initEnemigo() {
+    protected Image initEnemigo() {
         ImageIcon ii = new ImageIcon("src/recursos_gráficos/sprites/enemigo2.png");
         imagen = ii.getImage();
         vidas = 3;
+        return null;
     }
 
     @Override
@@ -29,7 +34,11 @@ public class EnemigoQueDispara extends Enemigo {
 
     @Override
     public void dibujar(Graphics g) {
-        g.drawImage(imagen, x, y, null);
+        if (moviendoDerecha) {
+            g.drawImage(imagenDerecha, x, y, null);
+        } else {
+            g.drawImage(imagenIzquierda, x, y, null);
+        }
     }
 
     private void disparar() {

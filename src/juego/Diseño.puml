@@ -1,0 +1,191 @@
+@startuml
+
+package "Lógica" {
+    class ControladorJuego {
+        - List<ObjetoDelJuego> objetos
+        - Nave nave
+        - boolean moviendoDerecha
+        - int VELOCIDAD
+        - int DESPLAZAMIENTO_VERTICAL
+        - int LIMITE_DERECHO
+        - int LIMITE_IZQUIERDO
+        - int nivel
+        - PanelJuego panel
+        + setPanel(PanelJuego panel)
+        - initDefensas()
+        - initEnemigos()
+        - initNivel1()
+        - initNivel2()
+        - initNivel3()
+        - initNivel4()
+        - initNivel5()
+        - iniciarBatallaContraJefe()
+        + actualizar()
+        - moverEnemigos()
+        - actualizarDisparos()
+        - verificarColisiones()
+        - verificarNivelCompleto()
+        + agregarObjeto(ObjetoDelJuego objeto)
+        + getObjetos(): List<ObjetoDelJuego>
+        + getJugador(): Nave
+    }
+
+    class GestorSonidos {
+        - Clip shootClip
+        - Clip backgroundMusicClip
+        + playShootSound()
+        + playBackgroundMusic()
+        + stopBackgroundMusic()
+        + reproducirBGM(String bgm)
+    }
+}
+
+
+package "Gráfica" {
+    class ObjetoDelJuego {
+        - int x
+        - int y
+        - Image imagen
+        + actualizar()
+        + dibujar(Graphics g)
+    }
+
+    class Nave {
+        + actualizar()
+        + dibujar(Graphics g)
+        + keyPressed(KeyEvent e)
+        + keyReleased(KeyEvent e)
+        + getMisiles(): List<Misil>
+    }
+
+    class Defensa {
+        - int vidas
+        + actualizar()
+        + dibujar(Graphics g)
+        + quitarVida()
+    }
+
+     abstract class Enemigo {
+        - int vidas
+        + actualizar()
+        + dibujar(Graphics g)
+        + mover(int dx, int dy)
+        + quitarVida()
+        + getVidas(): int
+    }
+
+   class EnemigoBasico {
+        + actualizar()
+        + dibujar(Graphics g)
+    }
+
+    class EnemigoConVida {
+        + actualizar()
+        + dibujar(Graphics g)
+    }
+
+    class EnemigoQueDispara {
+        - int PROBABILIDAD_DISPARO
+        - Random random
+        + actualizar()
+        + dibujar(Graphics g)
+        - disparar()
+    }
+
+    class EnemigoRapido {
+        + actualizar()
+        + dibujar(Graphics g)
+    }
+
+    abstract class Misil {
+        - boolean visible
+        + actualizar()
+        + dibujar(Graphics g)
+        + isVisible(): boolean
+        + setVisible(boolean visible)
+    }
+
+    class MisilEnemigo {
+        - boolean visible
+        + actualizar()
+        + dibujar(Graphics g)
+        + isVisible(): boolean
+        + setVisible(boolean visible)
+    }
+
+    class PanelJuego {
+        + setNivel(int nivel)
+    }
+    class JefeFinal{
+   -EstadoJefe estadoActual;
+   -Random random;
+    }
+    class EstadoNormal{
+    +actualizar()
+    +void disparar()
+    +void quitarVida()
+
+    }
+
+    interface EstadoJefe{
+        +ejecutar(JefeFinal jefe)
+        +void iniciar()
+    }
+
+    interface EstadoNave {
+        void actualizar();
+        void keyPressed(KeyEvent e);
+        void keyReleased(KeyEvent e);
+        void disparar();
+        quitarVida();
+    }
+
+    class EstadoDisparar {
+        -long : tiempoDisparoInicio
+        -long : DURACION_DISPARO
+    }
+
+    class EstadoMovimientoAleatorio{
+       -int LIMITE_DERECHO
+        -     int LIMITE_IZQUIERDO
+}
+
+    class EstadoBurlarse{
+        -long tiempoInicio
+        -long DURACION_BURLA
+    }
+
+    class EstadoInvulnerable{
+        -long tiempoInicio
+    }
+
+
+    ControladorJuego "1" -->"*" ObjetoDelJuego
+    ControladorJuego --> GestorSonidos
+    ControladorJuego --> PanelJuego
+
+    ObjetoDelJuego <|-- Nave
+    ObjetoDelJuego <|-- Defensa
+    ObjetoDelJuego <|-- Enemigo
+    ObjetoDelJuego <|-- Misil
+    Misil <|-- MisilEnemigo
+    Enemigo <|-- EnemigoBasico
+    Enemigo <|-- EnemigoConVida
+    Enemigo <|-- EnemigoQueDispara
+    Enemigo <|-- EnemigoRapido
+    JefeFinal --|> ObjetoDelJuego
+    Nave --> EstadoNave
+    JefeFinal --> EstadoJefe
+    EstadoJefe ..|> EstadoBurlarse
+    EstadoJefe ..|> EstadoDisparar
+    EstadoJefe ..|> EstadoMovimientoAleatorio
+    EstadoNave ..|> EstadoInvulnerable
+    EstadoNave ..|> EstadoNormal
+    Nave --> " *" Misil : misiles
+    EnemigoQueDispara -u-> " *" Misil : misiles
+
+}
+
+
+
+@enduml

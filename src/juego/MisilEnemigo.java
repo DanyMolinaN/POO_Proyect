@@ -22,4 +22,6 @@ public class MisilEnemigo extends Misil {
             setVisible(false);
         }
     }
+
+
 }

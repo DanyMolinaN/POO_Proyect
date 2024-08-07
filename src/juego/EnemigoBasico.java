@@ -7,13 +7,16 @@ public class EnemigoBasico extends Enemigo {
     public EnemigoBasico(int x, int y) {
         super(x, y);
         initEnemigo();
+        this.imagenDerecha = new ImageIcon("src/recursos_gráficos/sprites/NaveEnemigaDER1.gif").getImage();
+        this.imagenIzquierda = new ImageIcon("src/recursos_gráficos/sprites/NaveEnemigaIzq1.gif").getImage();
     }
 
     @Override
-    protected void initEnemigo() {
+    protected Image initEnemigo() {
         ImageIcon ii = new ImageIcon("src/recursos_gráficos/sprites/enemigo.png");
         imagen = ii.getImage();
         vidas = 1;
+        return null;
     }
 
     @Override
@@ -23,7 +26,10 @@ public class EnemigoBasico extends Enemigo {
 
     @Override
     public void dibujar(Graphics g) {
-        g.drawImage(imagen, x, y, null);
-
+        if (moviendoDerecha) {
+            g.drawImage(imagenDerecha, x, y, null);
+        } else {
+            g.drawImage(imagenIzquierda, x, y, null);
+        }
     }
 }

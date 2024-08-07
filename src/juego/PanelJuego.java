@@ -1,10 +1,7 @@
 package juego;
 
-import javax.swing.JPanel;
-import javax.swing.Timer;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,8 +9,9 @@ public class PanelJuego extends JPanel {
     private ControladorJuego controlador;
     private Timer timer;
     private int nivelActual;
-    private int contadorInicio=0;  // Inicializado en -1 para no mostrar el contador por defecto
+    private int contadorInicio = 0;  // Inicializado en -1 para no mostrar el contador por defecto
     private boolean mostrarContador = false;
+    private Image fondo;  // Imagen de fondo
 
     public PanelJuego(ControladorJuego controlador) {
         this.controlador = controlador;
@@ -38,6 +36,11 @@ public class PanelJuego extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // Dibujar el fondo
+        if (fondo != null) {
+            g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
+        }
+
         for (ObjetoDelJuego objeto : controlador.getObjetos()) {
             objeto.dibujar(g);
         }
@@ -45,6 +48,9 @@ public class PanelJuego extends JPanel {
         // Mostrar mensaje de nivel
         g.setColor(Color.WHITE);
         g.drawString("Nivel: " + nivelActual, 10, 20);
+        // Mostrar vidas e intentos
+        g.drawString("Vidas: " + controlador.getJugador().getVidas(), 10, 40);
+        g.drawString("Intentos: " + controlador.getJugador().getIntentos(), 10, 60);
 
         // Mostrar contador de inicio si es necesario
         if (mostrarContador) {
@@ -56,6 +62,13 @@ public class PanelJuego extends JPanel {
 
     public void setNivel(int nivel) {
         nivelActual = nivel;
+        cargarFondo();  // Cargar la imagen de fondo cuando se cambia el nivel
+    }
+
+    private void cargarFondo() {
+        String path = "src/recursos_gráficos/fondos/level" + nivelActual + ".gif";  // Ruta de las imágenes de fondo
+        ImageIcon icon = new ImageIcon(path);
+        fondo = icon.getImage();
     }
 
     public int mostrarContador(int contador) {
@@ -63,7 +76,6 @@ public class PanelJuego extends JPanel {
         mostrarContador = true;
         repaint();
         return contadorInicio;
-
     }
 
     public void ocultarContador() {
